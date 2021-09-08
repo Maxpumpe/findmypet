@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org"
+				xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8" />
+	<title th:text="${title}"></title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+	
+	<link rel="stylesheet" href="/webjars/bootstrap/5.1.0/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="/webjars/font-awesome/5.15.3/css/fontawesome.min.css" />
+	
+</head>
+<body>
+	
+	<header th:replace="fragments.html :: header"></header>
+
+	<main class="container">
+		<div class="row">
+			<div class="col-4">
+				
+				<form action="/api/user/save" id="user-form" method="post">
+					
+					<input type="hidden" name="id" id="id" />
+					
+					<div class="mb-3">
+						<label for="name" class="form-label">Name</label>
+						<input type="text" class="form-control" name="name" id="name" required="required" />
+					</div>
+					
+					<div class="mb-3">
+						<label for="email" class="form-label">Email</label>
+						<input type="email" class="form-control" name="email" id="email" required="required" />
+					</div>
+					
+					<div class="mb-3">
+						<label for="password" class="form-label">Passwort</label>
+						<input type="password" class="form-control" name="password" id="password" required="required" />
+					</div>
+				
+					<button type="submit" class="btn btn-success">Speichern</button>
+				</form>
+				
+			</div>
+			<div class="col-8">
+				
+				<table class="table">
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>E-Mail</th>
+							<th>&nbsp;</th>
+						</tr>
+					</thead>
+					
+					<tbody id="content">
+					</tbody>
+				
+				</table>
+			
+			</div>
+		</div>
+	</main>
+	
+	<script src="/webjars/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+	<script src="/webjars/jquery/3.6.0/jquery.min.js"></script>
+	<script>
+		$('#user-form').submit(function(event) {
+			event.preventDefault(); // Unterdruckt das standardverhalten des Formulars d.h. das Absenden an die URL in action 
+			
+			// Verpacke die Formulardaten in ein JavaScript Objekt
+			var user = {
+				id: $('#id').val(),
+				name: $('#name').val(),
+				email: $('#email').val(),
+				password: $('#password').val()
+			};
+			
+			var requestType = 'POST';
+			var requestUrl = '/api/user/save';
+			
+			// Wenn der User bereits in der DB ist, dann EDIT/UPDATE
+			if(user.id > 0) {
+				requestType = 'PUT';
+				requestUrl = '/api/user/edit/' + user.id;
+			}
+			
+			// $.ajax ist eine jQuery Funktion zum Versenden von asynchronen HTTP-Requests
+			$.ajax({
+				type: requestType, // Ajax Anfrage mit der Methode POST versenden
+				url: requestUrl, // Action-Attribut
+				data: JSON.stringify(user), // Wandelt ein Objekt in einen JSON-String um
+				dataType: 'json',
+				contentType: 'application/json', 
+				success: function(resp) { // Diese Methode ausführen, wenn diue Anfrage erfolgreich war
+					// resp enthält die Antwort des Servers
+					updateTable();
+				
+					$('#user-form').trigger('reset'); // Formular nach dem Senden leeren
+					$('#id').val(''); // Die versteckte ID aus dem Formular entferenen
+				}
+			});
+		}); // Listener beobachtet, ob das Formular abgeschickt wird
+		
+		
+		$(document).ready(function() {
+			parseJsonData();
+		});
+		
+		// Funktionen sind wie Methoden nur, dass sie nicht zu einer Klasse gehören
+		var parseJsonData = function() {
+			$.getJSON("/api/users", function(data) {
+				// console.log(data); // in data befinden sich die abgerufenen JSON-Daten
+				$.each(data, function(k, v) { // Schleife von JQuery
+					$('#content').append('<tr><td class="id">' + v.id + '</td><td class="name">' + v.name + '</td><td class="email">' + v.email + '</td><td><buton type="button" class="btn btn-warning editBtn" data-id="' + v.id +'">Edit</buton> <buton type="button" class="btn btn-danger deleteBtn" data-id="' + v.id +'">Delete</buton></td></tr>');	
+				})
+			});
+		}
+		
+		$('tbody').on("click", ".deleteBtn", function() {
+			$.ajax({
+				url: '/api/user/delete/' + $(this).data('id'), // $(this) steht für den Button, der gerade angeklickt wurde
+				type: 'DELETE', // Sendet ein DELETE HTTP-Request
+				success: function(resp) {
+					updateTable();
+				}
+			});
+		});
+		
+		$('tbody').on("click", ".editBtn", function() {
+			var tr = $(this).parent().parent();
+			$('#id').val($('.id', tr).text());
+			$('#name').val($('.name', tr).text());
+			$('#email').val($('.email', tr).text());
+		});
+		
+		var updateTable = function() {
+			$('#content').html('');
+			parseJsonData();
+		}
+		
+	</script>
+</body>
+</html>

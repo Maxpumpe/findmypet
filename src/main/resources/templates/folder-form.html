@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org"
+				xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8" />
+	<title th:text="${title}"></title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+	
+	<link rel="stylesheet" href="/webjars/bootstrap/5.1.0/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="/webjars/font-awesome/5.15.3/css/fontawesome.min.css" />
+	
+</head>
+<body>
+	
+	<header th:replace="fragments.html :: header"></header>
+
+	<main class="container">
+		<div class="row">
+			<div class="col-4">
+				
+				<form action="/folder/save" method="post">
+					
+					<input type="hidden" name="id" id="id" />
+					
+					<div class="mb-3">
+						<label for="name" class="form-label">Name</label>
+						<input type="text" class="form-control" name="name" id="name" required="required" />
+					</div>
+					
+					<button type="submit" class="btn btn-success">Speichern</button>
+				</form>
+				
+			</div>
+			<div class="col-8">
+			
+				<h2>Folder</h2>
+				
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Anzahl Snippets</th>
+						</tr>
+					</thead>
+					
+					<tbody id="content">
+						<tr th:each="folder : ${folderList}">
+							<td><a th:href="@{'/folder/' + ${folder.id}}" th:text="${folder.name}"></a></td>
+							<td>
+								<span th:if="${folder.snippets != null}" th:text="${folder.snippets.size}"></span>
+								<span th:unless="${folder.snippets != null}">0</span>
+							</td>
+						</tr>
+					</tbody>
+				
+				</table>
+			
+			</div>
+		</div>
+	</main>
+	
+	<script src="/webjars/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org"
+				xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+	<meta charset="UTF-8" />
+	<title th:text="${title}"></title>
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+	
+	<link rel="stylesheet" href="/webjars/bootstrap/5.1.0/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="/webjars/font-awesome/4.7.0/css/font-awesome.min.css" />
+	<link rel="stylesheet" href="/webjars/highlightjs/10.1.2/styles/default.min.css" />
+	
+</head>
+<body>
+	
+	<header th:replace="fragments.html :: header"></header>
+
+	<main class="container mb-3">
+		<div class="row">
+			<div class="col-4">
+				
+				<form th:action="@{'/folder/' + ${folder.id} + '/save'}" method="post" th:object="${snippet}">
+					
+					<input type="hidden" th:field="*{id}" />
+					
+					<div class="mb-3">
+						<label for="name" class="form-label">Name</label>
+						<input type="text" class="form-control" th:field="*{name}" required="required" />
+					</div>
+					
+					<div class="mb-3">
+						<label for="name" class="form-label">Beschreibung</label>
+						<textarea type="text" class="form-control" th:field="*{description}" rows="3"></textarea>
+					</div>
+					
+					<div class="mb-3">
+						<label for="name" class="form-label">Code</label>
+						<textarea type="text" class="form-control" th:field="*{code}" rows="10"></textarea>
+					</div>
+					
+					<div class="mb-3">
+						<select class="form-select" aria-label="Sprache" name="languageNum" id="languageNum">
+							<!-- T aus der SpEL : Spring Expression Language -->
+							<option th:each="lang : ${T(de.lubowiecki.snippr.model.Language).values()}"
+								th:value="${lang.ordinal()}" th:text="${lang.label}" th:selected="${lang} == ${snippet.language}"></option>
+						</select>
+					</div>
+					
+					<div class="mb-3 form-check form-switch">
+						<input class="form-check-input" type="checkbox" th:field="*{approved}" th:checked="${snippet.approved}">
+  						<label class="form-check-label" for="approved">Public</label>
+					</div>
+					
+					<button type="submit" class="btn btn-success">Speichern</button>
+					<a th:href="@{'/folder/' + ${folder.id}}" class="btn btn-warning">Abbrechen</a>
+				</form>
+				
+			</div>
+			<div class="col-8">
+			
+				<h2>
+					<span th:text="${folder.name}"></span>
+					<a th:href="@{'/folder/' + ${folder.id} + '/delete'}" title="Löschen"><i class="fa fa-trash-o"></i></a>
+				</h2>
+				
+				<div class="alert alert-danger" th:if="${errMsg != null}" th:text="${errMsg}"></div>
+				
+				
+				<div th:each="snippet : ${folder.snippets}" class="card mb-3">
+					<div class="card-header">
+						<span th:text="${snippet.name}"></span>
+						<span class="badge bg-info text-dark" th:text="${snippet.language.label}"></span>
+						<i class="fa" th:classappend="${snippet.approved} ? 'fa-unlock' : 'fa-lock'" aria-hidden="true"></i>
+					</div>
+					<div class="card-body">
+						<p th:text="${snippet.description}"></p>
+						<pre><code th:class="@{'language-' + ${snippet.language.langFile}}" th:text="${snippet.code}"></code></pre>
+					</div>
+					<div class="card-footer container">
+						<div class="row">
+							<div class="col">
+								Move: 
+								<form th:action="@{'/snippet/' + ${snippet.id} + '/move'}" method="post">
+									<select name="moveto" id="moveto" class="form-select">
+										<option th:each="folder : ${folders}" th:value="${folder.id}" th:text="${folder.name}">
+									</select>
+									<button type="submit" class="btn btn-info">Verschieben</button>
+								</form>
+							</div>
+							<div class="col text-end">
+								<a th:href="@{'/snippet/' + ${snippet.id} + '/delete'}" title="Löschen" data-bs-toggle="modal" data-bs-target="#deleteDialog"><i class="fa fa-trash-o"></i></a>
+								<a th:href="@{'/snippet/' + ${snippet.id} + '/edit'}" title="Bearbeiten"><i class="fa fa fa-pencil-square-o"></i></a>
+							</div>
+						</div>	
+    				</div>
+				</div>
+			
+			</div>
+		</div>
+	</main>
+	
+	<div class="modal" tabindex="-1" id="deleteDialog">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title">Wirklich löschen?</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        <p>Möchtest du das Snippet wirklich löschen?</p>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nö</button>
+	        <button type="button" class="btn btn-primary" id="deleteBtn">Jup</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	
+	<script src="/webjars/bootstrap/5.1.0/js/bootstrap.bundle.min.js"></script>
+	<script src="/webjars/highlightjs/10.1.2/highlight.min.js"></script>
+	
+	<!-- erzeugt für jede requiredLang einen script-Tag und verwendet ein dynamisches src-Attribut (Teil feste URL, Teil dynamisch) -->
+	<script th:each="requiredLang : ${requiredLangFiles}" th:src="@{'/webjars/highlightjs/10.1.2/languages/' + ${requiredLang} + '.min.js'}"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+	
+	<script>
+	var href;
+	
+	var exampleModal = document.getElementById('deleteDialog')
+	exampleModal.addEventListener('show.bs.modal', function (event) {
+		href = event.relatedTarget.href;
+	})
+	
+	var deleteBtn = document.getElementById('deleteBtn')
+	deleteBtn.addEventListener('click', function (event) {
+		location.href = href;
+	})
+	
+	</script>
+	
+</body>
+</html>
