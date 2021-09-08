@@ -22,6 +22,9 @@
 .App-link {
   color: #61dafb;
 }
+.authLayout {
+	border:1px solid red;
+}
 
 @keyframes App-logo-spin {
   from {

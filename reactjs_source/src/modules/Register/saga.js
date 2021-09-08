@@ -12,6 +12,12 @@ import otpSaga from './ConfirmAccount/saga';
 
 //Register API call
 function registerCall(payload) {
+    payload.firstname = payload.firstName;
+    payload.lastname = payload.lastName;
+    delete payload.firstName;
+    delete payload.lastName;
+    
+    
   return request('post', urls.REGISTER_URL, payload);
 }
 

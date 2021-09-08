@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
 
 
@@ -32,10 +33,7 @@ import lombok.NoArgsConstructor;
 public class AppUser implements Serializable  {
 	
 
-	  /**
-	 * 
-	 */
-	private static final long serialVersionUID = 6358953666519259495L;
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	    @SequenceGenerator(
@@ -59,12 +57,12 @@ public class AppUser implements Serializable  {
 	@NotNull
 	@Size(min = 2, max = 25)
 	@Column(length = 25)
-	private String firstname;
+	private String firstName;
 	
 	@NotNull
 	@Size(min = 2, max = 25)
 	@Column(length = 25)
-	private String lastname;
+	private String lastName;
 	
 	
 	 @Column(name = "email",nullable = false,length=80)
@@ -98,17 +96,17 @@ public class AppUser implements Serializable  {
 	public AppUser() {}
 	public AppUser(
 			              
-			@NotNull @Size(min = 2, max = 25) String firstname,
-										      String lastname,
-			                                  String telefone,
+			@NotNull @Size(min = 2, max = 25) String firstName,
+										      String lastName,
+			@Null							  String telefone,
 			@NotNull @Email                   String email,
 			@NotNull @Size(min = 6, max = 100)String password,
 											   Role role
 			) {
 		super();
 	
-		this.firstname = firstname;
-		this.lastname = lastname;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.email = email;
 		this.telefone = telefone;
 		this.password = password;
@@ -132,16 +130,16 @@ public class AppUser implements Serializable  {
 		this.userName = userName;
 	}
 	public String getFirstname() {
-		return firstname;
+		return firstName;
 	}
 	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+		this.firstName = firstname;
 	}
 	public String getLastname() {
-		return lastname;
+		return lastName;
 	}
 	public void setLastname(String lastname) {
-		this.lastname = lastname;
+		this.lastName = lastname;
 	}
 	public String getEmail() {
 		return email;
@@ -178,12 +176,12 @@ public class AppUser implements Serializable  {
 	}
 	
 	public String getAuthcurrentUserName() {
-		return firstname + " " + lastname;
+		return firstName + " " + lastName;
 	}
 	
 	@Override
 	public String toString() {
-		return "AppUser [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", email=" + email
+		return "AppUser [id=" + id + ", firstname=" + firstName + ", lastname=" + lastName + ", email=" + email
 				+ ", password=" + password + ", telefone=" + telefone + ", roles=" + role+ "]";
 	}
 
