@@ -1,0 +1,6 @@
+npm update
+
+react-scripts  build
+
+copy the Folder build/static build to findmypet\public
+copy all of the Folder build to \src\main\resources\templates (including index.html)

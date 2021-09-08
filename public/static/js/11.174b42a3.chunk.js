@@ -1,0 +1,2 @@
+(this["webpackJsonpreact-demo-app-saga"]=this["webpackJsonpreact-demo-app-saga"]||[]).push([[11],{329:function(e,t,a){"use strict";a.r(t);var o=a(30),r=a(31),n=a(32),c=a(33),s=a(1),p=a(9),u=a(3),i=function(e){Object(n.a)(a,e);var t=Object(c.a)(a);function a(){return Object(o.a)(this,a),t.apply(this,arguments)}return Object(r.a)(a,[{key:"render",value:function(){return localStorage.removeItem("user"),localStorage.removeItem("token"),Object(u.jsx)(p.a,{to:"/login"})}}]),a}(s.Component);t.default=i}}]);
+//# sourceMappingURL=11.174b42a3.chunk.js.map
