@@ -52,7 +52,7 @@ public class Application {
 			
 			AppUser adminUser = userService.save(new AppUser("Daniel", "Ernst", "03047893648732", "info@dazo.de", "password",Role.ADMIN));//ApplicationUserRole.ADMIN
 
-			AppUser custuser =userService.save( new AppUser("Daniel", "Ernst", "03047893648732", "ernst@dazo.de", "passoword", Role.ADMIN));
+			AppUser custuser =userService.save( new AppUser("Daniel", "Ernst", "03047893648732", "ernst@dazo.de", "password", Role.ADMIN));
 			AppUser custuser1 = userService.save(new AppUser("Heike", "Friedrich", "03047893648732", "heike@dazo.de", "password1234", Role.ADMIN));
 			System.out.println("create init Demo User");
 

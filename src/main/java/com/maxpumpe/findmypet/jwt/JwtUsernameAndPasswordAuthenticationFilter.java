@@ -3,6 +3,7 @@ package com.maxpumpe.findmypet.jwt;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.maxpumpe.findmypet.model.AppUserDetails;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -70,17 +71,15 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 		String key = "SECUREKEYMORESECUREKEYMOREUNDJEMEHRDESTOBESSER"; // TODO: implement a random one at installation
 																		// of this app
 		String token = Jwts.builder().setSubject(authResult.getName()).claim("autorities", authResult.getAuthorities())
-				// .setSubject(authResult.getName()).claim("authorities",
-				// authResult.getAuthorities())
 				.setIssuedAt(new Date())
 				// .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays())))
 				// //TODO: Ablauf des Token in Tage - setzn in die configuration
 				.setExpiration(java.sql.Date.valueOf(LocalDate.now().plusWeeks(2)))
 				.signWith(Keys.hmacShaKeyFor(key.getBytes())).compact();
-		// .signWith(secretKey).compact();
+
 		System.out.println("successfulAuthentication:" + authResult.toString());
 		response.addHeader("Authorsation", "Bearer " + token); // TODO: remove - this is only for primitive awt token
-																// test
+																
 		Cookie cookie = new Cookie("cookieKey", "cookieValue");
 
 		// expires in 7 days
@@ -95,13 +94,13 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 		response.setContentType("application/json");
 
 		PrintWriter out = response.getWriter();
-
+		AppUserDetails currentAuthUser = (AppUserDetails) authResult.getPrincipal();
 		JsonObject json = new JsonObject();
-System.out.println("authResult --------------- " + authResult);
 		json.addProperty("_id", 1);
 		json.addProperty("email", authResult.getName());
-		json.addProperty("firstName", "Max");
-		json.addProperty("lastName", "Mustermann");
+		json.addProperty("firstName", currentAuthUser.getUser().getFirstname());
+		json.addProperty("lastName", currentAuthUser.getUser().getLastname());
+		json.addProperty("Name", currentAuthUser.getUser().getAuthcurrentUserName());
 	    json.addProperty("token", token); //TODO: Fix that only goes over Header - is a task of reactjs UI
 		out.print(json);
 		out.flush();

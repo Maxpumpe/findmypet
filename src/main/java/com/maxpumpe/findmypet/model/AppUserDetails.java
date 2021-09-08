@@ -16,6 +16,7 @@ public class AppUserDetails implements UserDetails {
 	private static final long serialVersionUID = 3625056575301119632L;
 	private String userName;
 	private String password;
+	private String teste;
 	private boolean active;
 	private final AppUser user;
 	private java.util.List<SimpleGrantedAuthority> authorities; 
@@ -27,6 +28,7 @@ public class AppUserDetails implements UserDetails {
 	
 	public AppUserDetails(  AppUser user) {
 		this.user = user;
+		this.teste = "irgendwas";
 	}
 	
 	

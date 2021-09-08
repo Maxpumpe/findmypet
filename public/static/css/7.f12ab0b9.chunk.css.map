@@ -1,0 +1,1 @@
+{"version":3,"sources":["webpack://src/modules/Book/book.css"],"names":[],"mappings":"AAAA,YACI,gBACJ,CAEA,gBACI,SAAU,CACV,iBACJ,CAEA,UACI,eACJ","file":"7.f12ab0b9.chunk.css","sourcesContent":["input.error {\n    border-color: red;\n}\n\n.input-feedback {\n    color: red;\n    margin-top: .25rem;\n}\n\n.alert li {\n    list-style: none;\n}"]}

@@ -36,52 +36,13 @@ public class MainController {
 //	@Autowired
 //	private HttpSession session;
 	
-	@RequestMapping("/start")
+	@RequestMapping("/")
 	public String index(Model model) {
-		model.addAttribute("title", "Startseite");
-		model.addAttribute("content", "Herzlich Willkommen");
-		return "standard";
-	}
-	
-//	@RequestMapping("/public")
-//	public String doSomethingElse(Model model) {
-//		model.addAttribute("title", "Public");
-//		model.addAttribute("content", "Alles ganz öffentlich.");
-//		return "standard";
-//	}
-	
-	@RequestMapping("/private")
-	public String privatePage(Model model) {
-		model.addAttribute("title", "Privat");
-		model.addAttribute("content", "Ganz geheime Sachen.");
-		return "standard";
-	}
-	
-	@GetMapping("/login") // Formular
-	public String loginForm(Model model) {
-		return "login-form";
+
+		return "index";
 	}
 	
 
-	
-	@RequestMapping("/login_error")
-	public String loginError(Model model) {
-		model.addAttribute("error", true);
-		return "login-form";
-	}
-	
-	@RequestMapping("/logout")
-	public String logout(SessionStatus status, HttpSession session) {
-		SecurityContextHolder.getContext().setAuthentication(null);
-		status.setComplete();
-		session.invalidate();
-		return "login-form";
-	}
-	
-	@GetMapping("/register") // Formular
-	public String registerForm(AppUser user) {
-		return "register-form";
-	}
 	
 
 }

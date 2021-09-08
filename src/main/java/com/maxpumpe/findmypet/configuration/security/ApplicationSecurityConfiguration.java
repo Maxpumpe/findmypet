@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -33,11 +32,13 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
 	//private final ApplicationUserService applicationUserService;
 	@Autowired
 	UserDetailsService userDetailsService;
+
 	private PasswordEncoder passwordEncoder;
 	
-	  @Autowired public void ApplicationSecurityConfig(PasswordEncoder passwordEncoder)
+	 // @Autowired public void ApplicationSecurityConfig(PasswordEncoder passwordEncoder)
+	 //{ this.passwordEncoder = passwordEncoder; }
+	   @Autowired public void ApplicationSecurityConfig(PasswordEncoder passwordEncoder)
 	 { this.passwordEncoder = passwordEncoder; }
-	 
 	
 
 	@Override
@@ -50,7 +51,7 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
         .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager()))
 
         .authorizeRequests()
-        .antMatchers("/", "index", "/css/*", "/js/*").permitAll()
+        .antMatchers("/**",  "static/**", "/js/*", "/css/*").permitAll()
         .antMatchers("/api/**").hasRole(USER.name())
         .anyRequest()
         .authenticated();
@@ -59,18 +60,17 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
 	@Override   //Authenticate the USer
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		
-		//auth.userDetailsService(userDetailsService);
 		auth.authenticationProvider(authProvider());
 	}
 
 @Bean
 public PasswordEncoder getPasswordEncoder() {
-	//return NoOpPasswordEncoder.getInstance(); //test this fuck what in it
-	return new BCryptPasswordEncoder();
+	//return NoOpPasswordEncoder.getInstance(); //test this fuck what is in it? -sorry for the fuck :-)
+	return passwordEncoder;
 }
 	
 @Bean
-public AuthenticationProvider authProvider() {
+public AuthenticationProvider authProvider() { //TODO - fillup Details with the User Entity
 	DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
 	
 	
@@ -85,7 +85,7 @@ public AuthenticationProvider authProvider() {
 	public CorsConfigurationSource corsConfigurationSource() {
 	    final CorsConfiguration config = new CorsConfiguration();
 
-	    config.setAllowedOrigins(Arrays.asList("http://localhost:4200","http://qsolog.de:3001"));
+	    config.setAllowedOrigins(Arrays.asList("http://localhost:3001","http://qsolog.de:3001","http://localhost:3000"));
 	    config.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
 	    config.setAllowCredentials(true);
 	    config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));

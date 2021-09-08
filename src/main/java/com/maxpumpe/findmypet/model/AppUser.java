@@ -176,6 +176,11 @@ public class AppUser implements Serializable  {
 	public void setRoles(Role role) {
 		this.role = role;
 	}
+	
+	public String getAuthcurrentUserName() {
+		return firstname + " " + lastname;
+	}
+	
 	@Override
 	public String toString() {
 		return "AppUser [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", email=" + email
