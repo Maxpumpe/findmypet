@@ -40,7 +40,10 @@ login Example
 POST http://localhost:8080/login
 {"username": "est@mail.de","password": "123456"}
 
-Implemented User for testing
-"test1@mail.de", "password"
-"test2@mail.de", "password"
-"test3@mail.de", "password1234"
+Implemented User for testing<br>
+
+"test1@mail.de", "password"<br>
+
+"test2@mail.de", "password"<br>
+
+"test3@mail.de", "password1234"<br>
