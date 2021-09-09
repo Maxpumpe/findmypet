@@ -7,9 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(code = HttpStatus.SEE_OTHER, reason = "exists")
 public class EntityExistsException extends Exception {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
     
 }

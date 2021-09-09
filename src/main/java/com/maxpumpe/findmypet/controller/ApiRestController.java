@@ -32,8 +32,8 @@ import com.maxpumpe.findmypet.configuration.AppConfig;
 import com.maxpumpe.findmypet.configuration.natsConfig;
 import com.maxpumpe.findmypet.model.AppUser;
 import com.maxpumpe.findmypet.model.AppUserRepository;
-
-
+import com.maxpumpe.findmypet.model.Pet;
+import com.maxpumpe.findmypet.model.PetService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -45,8 +45,8 @@ public class ApiRestController {
 	private static final Logger log = Logger.getLogger(ApiRestController.class.getName());
 	HttpServletRequest request;
 
-
-
+	@Autowired
+	PetService service;
 	@Autowired
 	private AppUserRepository repo;
 
@@ -70,8 +70,24 @@ public class ApiRestController {
 	}
 
 
+	@ResponseStatus(code = HttpStatus.OK)
+	@PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+	@RequestMapping(value = "addPet", consumes = "application/json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public Map<String, String> addPetEntitytoMap(@Valid @RequestBody Pet pet, BindingResult result) {
 
+		service.addPet(pet);//@NotNull is buggy so deactive for userowner
+		 return Collections.singletonMap("sussess", "true");
+		
+	}
 	
+	@ResponseStatus(code = HttpStatus.OK)
+	@GetMapping("/getPetList")
+	public Map<String, Iterable<Pet>> getPetEntityasList() {
+		
+		Iterable<Pet> pet = service.getPetList(); 
+		
+		 return Collections.singletonMap("data", pet);
+	}
 	
 	
 	//   @GetMapping

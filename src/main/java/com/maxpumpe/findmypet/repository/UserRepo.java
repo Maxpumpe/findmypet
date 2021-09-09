@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 public interface UserRepo extends JpaRepository<AppUser, Long> {
 	
 	
-	public AppUser findByEmail(String email); // find, read, get, query
-	//public AppUser getById();
+	public AppUser findByEmail(String email);
+	
 
 }

@@ -59,9 +59,7 @@ public class LoginRestController {
 	@ResponseStatus(code = HttpStatus.OK)
 	@RequestMapping(value = "register", consumes = "application/json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, String> register(@Valid @RequestBody AppUser user, BindingResult result) {
-		//System.out.println("AppUser:------------ " + user.toString());
-		//System.out.println("result:------------ " + result.toString());
-		//System.out.println("result Error: ------------" + result);
+
 		Optional<AppUser> existsUser = this.repo.findByEmail(user.getEmail());
 		
 		

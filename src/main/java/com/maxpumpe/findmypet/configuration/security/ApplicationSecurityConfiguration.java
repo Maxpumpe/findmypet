@@ -51,8 +51,8 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
         .addFilter(new JwtUsernameAndPasswordAuthenticationFilter(authenticationManager()))
 
         .authorizeRequests()
-        .antMatchers("/",  "/static/**", "/js/*", "/css/*","/login/**").permitAll()
-        .antMatchers("/api/**").hasRole(USER.name())
+        .antMatchers("/","/api/**",  "/static/**", "/js/*", "/css/*","/login/**").permitAll()
+        .antMatchers("/apis/**").hasAnyRole(ADMIN.name(),USER.name())
         .anyRequest()
         .authenticated();
 	}
@@ -65,7 +65,7 @@ public class ApplicationSecurityConfiguration extends WebSecurityConfigurerAdapt
 
 @Bean
 public PasswordEncoder getPasswordEncoder() {
-	//return NoOpPasswordEncoder.getInstance(); //test this fuck what is in it? -sorry for the fuck :-)
+	//return NoOpPasswordEncoder.getInstance(); //TODO:test this 
 	return passwordEncoder;
 }
 	
@@ -85,7 +85,7 @@ public AuthenticationProvider authProvider() { //TODO - fillup Details with the 
 	public CorsConfigurationSource corsConfigurationSource() {
 	    final CorsConfiguration config = new CorsConfiguration();
 
-	    config.setAllowedOrigins(Arrays.asList("http://localhost:3001","http://qsolog.de:3001","http://localhost:3000"));
+	    config.setAllowedOrigins(Arrays.asList("http://localhost:3001","http://qsolog.de:3001","http://localhost:3000","localhost"));
 	    config.setAllowedMethods(Arrays.asList("GET", "POST", "OPTIONS", "DELETE", "PUT", "PATCH"));
 	    config.setAllowCredentials(true);
 	    config.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
