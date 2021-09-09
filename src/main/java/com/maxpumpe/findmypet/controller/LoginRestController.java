@@ -1,5 +1,6 @@
 package com.maxpumpe.findmypet.controller;
 
+import java.io.IOException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Collections;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +26,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.maxpumpe.findmypet.configuration.AppConfig;
 import com.maxpumpe.findmypet.configuration.natsConfig;
 import com.maxpumpe.findmypet.model.AppUser;
@@ -50,29 +55,35 @@ public class LoginRestController {
 	@Autowired
 	private natsConfig natsConf;
 
+	
 	@ResponseStatus(code = HttpStatus.OK)
 	@RequestMapping(value = "register", consumes = "application/json", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Map<String, String> register(@Valid @RequestBody AppUser user, BindingResult result) {
-		System.out.println("BindingResult:" + user.toString());
-		
+		//System.out.println("AppUser:------------ " + user.toString());
+		//System.out.println("result:------------ " + result.toString());
+		//System.out.println("result Error: ------------" + result);
 		Optional<AppUser> existsUser = this.repo.findByEmail(user.getEmail());
 		
-		System.out.println("existsUser" + existsUser);
+		
 		if (! existsUser.isEmpty()) {
-
-			System.out.println("user exists" + existsUser.toString());
-			return Collections.singletonMap("User", "exists"); // Change this to dynamic Exception Response Status
+			System.out.println("------------ user exists: ------------" + existsUser.toString());
+			return Collections.singletonMap("User", "exists");
 		}
 
 
-
+		
 		if (result.hasErrors()) {
-			log.info("wrong Attr");
-			System.out.println("hasErrors" + user.toString());
-			Collections.singletonMap("success", "false");
+		   
+			System.out.println("----------------------------");
+			result.getAllErrors().listIterator().forEachRemaining(c -> System.out.println(((FieldError) c).getField() + " -- " + c.getDefaultMessage()));
+			System.out.println("hasError: ------------" + result.hasErrors());
+			System.out.println("@RequestBody JUser :" + user.toString());
+			System.out.println("----------------------------");
+			
+			return Collections.singletonMap("success", "false");
 		}
 
-		// Kein Fehler
+		// no Error - write Data
 		 try {
 			 userService.save(user);
 		 } catch (Exception e) {
