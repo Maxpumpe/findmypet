@@ -38,7 +38,7 @@ POST http://localhost:8080/login/auth/register
 
 login Example
 POST http://localhost:8080/login
-{"username": "est@mail.de","password": "123456"}
+{"username": "test@mail.de","password": "123456"}
 
 Implemented User for testing<br>
 
